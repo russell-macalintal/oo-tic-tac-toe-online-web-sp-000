@@ -10,93 +10,98 @@ class TicTacToe
     [2,4,6]
   ]
 
-  attr_accessor :board, :user_input, :index
+  attr_accessor :board, :user_input
+
+  def initialize
+    @board = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
+  end
 
   def display_board
-    puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
+    puts " #{self.board[0]} | #{self.board[1]} | #{self.board[2]} "
     puts "-----------"
-    puts " #{@board[3]} | #{@board[4]} | #{@board[5]} "
+    puts " #{self.board[3]} | #{self.board[4]} | #{self.board[5]} "
     puts "-----------"
-    puts " #{@board[6]} | #{@board[7]} | #{@board[8]} "
+    puts " #{self.board[6]} | #{self.board[7]} | #{self.board[8]} "
   end
 
-  def input_to_index
-    @user_input.to_i - 1
+  def input_to_index(user_input)
+    user_input.to_i - 1
   end
 
-  # def move(index, token = "X")
-  #   @board[index] = valid_move?(board, index) ? token : board[index]
-  # end
-  #
-  # def position_taken?(board, index)
-  #   !(board[index] == " " || board[index].nil?)
-  # end
-  #
-  # def valid_move?(board, index)
-  #   !position_taken?(board, index) && index.between?(0,8)
-  # end
-  #
-  # def turn(board)
-  #   puts "Please enter 1-9:"
-  #   input = gets.strip
-  #   index = input_to_index(input)
-  #   if valid_move?(board, index)
-  #     token = current_player(board)
-  #     move(board, index, token)
-  #     display_board(board)
-  #   else
-  #     turn(board)
-  #   end
-  # end
-  #
-  # def turn_count(board)
-  #   token_array = board.select {|token| token == "X" || token == "O"}
-  #   counter = token_array.length
-  # end
-  #
-  # def current_player(board)
-  #   turn_count(board).even? ? "X" : "O"
-  # end
-  #
-  # def won?(board)
-  #   WIN_COMBINATIONS.each do |win_combo|
-  #     if win_combo.all? {|index| board[index] == "X"} || win_combo.all? {|index| board[index] == "O"}
-  #       return win_combo
-  #     end
-  #   end
-  #   return false
-  # end
-  #
-  # def full?(board)
-  #   board.none? {|token| token == " " || token.nil?}
-  # end
-  #
-  # def draw?(board)
-  #   full?(board) && !won?(board)
-  # end
-  #
-  # def over?(board)
-  #   won?(board) || draw?(board) || full?(board)
-  # end
-  #
-  # def winner(board)
-  #   if won?(board) != false
-  #     board[won?(board)[0]]
-  #   else
-  #     nil
-  #   end
-  # end
-  #
-  # def play(board)
-  #   until over?(board) do
-  #     turn(board)
-  #   end
-  #   if won?(board)
-  #     puts "Congratulations #{winner(board)}!"
-  #   elsif draw?(board)
-  #     puts "Cat's Game!"
-  #   end
-  # end
+  def move(index, token = "X")
+    # self.board[index] = self.valid_move?(index) ? token : self.board[index]
+    self.board[index] = token
+  end
 
+  def position_taken?(index)
+    # !(self.board[index] == " " || self.board[index].nil?)
+    self.board[index] == "X" || self.board[index] == "O"
+  end
+
+  def valid_move?(index)
+    !self.position_taken?(index) && index.between?(0,8)
+  end
+
+  def turn
+    puts "Please enter 1-9:"
+    input = gets.strip
+    index = self.input_to_index(input)
+    if self.valid_move?(index)
+      token = self.current_player
+      self.move(index, token)
+      self.display_board
+    else
+      self.turn
+    end
+  end
+
+  def turn_count
+    token_array = self.board.select {|token| token == "X" || token == "O"}
+    counter = token_array.length
+  end
+
+  def current_player
+    turn_count.even? ? "X" : "O"
+  end
+
+  def won?
+    WIN_COMBINATIONS.each do |win_combo|
+      if win_combo.all? {|index| self.board[index] == "X"} || win_combo.all? {|index| self.board[index] == "O"}
+        return win_combo
+      end
+    end
+    return false
+  end
+
+  def full?
+    self.board.none? {|token| token == " " || token.nil?}
+  end
+
+  def draw?
+    self.full? && !self.won?
+  end
+
+  def over?
+    self.won? || self.draw? || self.full?
+  end
+
+  def winner
+    if self.won? != false
+      self.board[self.won?[0]]
+    else
+      nil
+    end
+  end
+
+  def play
+    until self.over? do
+      self.turn
+    end
+    if self.won?
+      puts "Congratulations #{self.winner}!"
+    elsif self.draw?
+      puts "Cat's Game!"
+    end
+  end
 
 end
